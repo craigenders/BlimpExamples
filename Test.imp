@@ -1,0 +1,20 @@
+DATA: dkstacked.dat;
+VARIABLES: y d time level2id;
+NOMINAL: timenom;
+ORDINAL: d;
+CLUSTERID: level2id;
+MISSING: 999;
+TRANSFORM:
+timenom = time;
+ylag = lag1(y, time, level2id);
+FIXED: time timenom;
+CENTER: grandmean = y ylag;
+MODEL:
+y ~ time | time;
+# ylag ~ y time;
+d ~ 1@-3 timenom y ylag | 1@0;
+SEED: 90291;
+BURN: 10000;
+ITERATIONS: 1000;
+# OPTIONS: labels;
+# DEBUG: allow_tune_fail;
